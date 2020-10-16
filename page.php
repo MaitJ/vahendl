@@ -95,7 +95,7 @@
     </header>
     <?php require('defnavbar.php'); ?>
     <div id="content">
-      <h2>Haugi poiss</h2>
+      <h2>Test vahendl Haugi poiss</h2>
       <img src="<?php echo $haugiPildiArray[0]?>">
       <p>Haug ehk harilik haug ehk havi (Esox lucius) on hauglaste sugukonda haugi perekonda kuuluv röövkala.
 
