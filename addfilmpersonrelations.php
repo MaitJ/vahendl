@@ -145,6 +145,7 @@
     </header>
     <?php require('navbar.php'); ?>
     <div id="content">
+    <h4>Inimeste ja filmide kirje loomine</h4>
     <form id="registerform" method="POST">
       <label for="personinput">Inimene: </label>
       <select name="personinput" id="personinput">
@@ -167,6 +168,7 @@
       <input type="submit" name="relationsubmit" value="Loo seos">
       <p><?php echo $notice; ?></p>
     </form>
+    <hr>
     <h4>Filmi zanri kirje loomine</h4>
     <form method="POST" id="registerform">
     <label for="filminput2">Filmi nimi:</label>
@@ -181,6 +183,7 @@
     <span><?php echo $filmgenreerror; ?></span>
     <input type="submit" name="relationsubmitgenre" value="Loo seos">
     <p><?php echo $notice2; ?></p>
+    <br>
     </form>
     </div>
     <footer>

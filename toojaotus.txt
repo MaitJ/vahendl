@@ -1,0 +1,29 @@
+Tehtud:
+	Kuvamine:
+	person_in_movie
+	
+	Kirjutamine:
+	person_in_movie
+	movie_genre(Kilgil tehtud)
+	production_company(Kilgil tehtud)
+	
+
+Tegemata
+	Kuvamine:
+	movie_genre
+	production_company
+	position
+	genre
+	movie
+	movie_by_production_company
+	quote
+	person
+
+	Kirjutamine:
+	person
+	quote
+	genre
+	movie_by_production_company
+	position
+	
+	
