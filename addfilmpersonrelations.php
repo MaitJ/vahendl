@@ -20,11 +20,16 @@
   $filminputerror = "";
   $positioninputerror = "";
   $roleinputerror = "";
+  $moviestudioselecterror = "";
+  $quoteinputerror = "";
 
   $personinputvalue = 0;
   $filminputvalue = 0;
   $positioninputvalue = 0;
   $roleinputvalue = "";
+
+  $selectedstudio = "";
+  $selected = "";
 
   $notice = "";
 
@@ -68,13 +73,37 @@
   $personoptionhtml = readpersonoptionshtml($personinputvalue);
   $filmoptionhtml = readfilmoptionshtml($filminputvalue);
   $positionoptionhtml = readpositionoptionshtml($positioninputvalue);
+  $moviestudioselecthtml = readstudiotoselect($selectedstudio);
+  $quoteselecthtml = "";
 
   $filminput2value = 0;
   $filminput2error = "";
   $filmgenrevalue = 0;
   $filmgenreerror = "";
   $notice2 = 0;
-  if (isset($_POST["relationsubmitgenre"]) and !empty($_POST["relationsubmitgenre"])) {
+
+  if (isset($_POST["filmgenrerelationsubmit"])) /*and !empty($_POST["relationsubmitgenre"]))*/ {
+
+    if (!empty($_POST["filminput2"])) {
+      $filminput2value = $_POST["filminput2"];
+    }
+    else {
+      $filminput2error = "Vali film";
+    }
+
+    if (!empty($_POST["filmgenreinput"])) {
+     $filmgenrevalue = $_POST["filmgenreinput"];
+    }
+    else {
+      $filmgenreerror = "Vali zanr";
+    }
+
+    if (!empty($filminput2value) and !empty($filmgenreinput)) {
+      $notice2 = storenewgenrerelation($selectedmovie, $selectedgenre);  //POOLELI
+    }
+  }
+
+  /*if (isset($_POST["relationsubmitgenre"]) and !empty($_POST["relationsubmitgenre"])) {
 
     if (!empty($_POST["filminput2"])) {
       $filminput2value = $_POST["filminput2"];
@@ -91,12 +120,12 @@
     }
 
     if (!empty($filminput2value) and !empty($filmgenrevalue)) {
-      $notice2 = storenewgenrerelation($filminput2value, $filmgenrevalue);
+      $notice2 = storenewgenrerelation($selectedmovie, $selectedgenre);
     }
-  }
+  } */
 
   $filmoptionhtml2 = readfilmoptionshtml($filminput2value);
-  $filmgenrehtml = readfilmgenrehtml($filmgenrevalue);
+  $filmgenrehtml = readgenre($selected);
   //vaatame semestri kulgemist
   $semesterStart = new DateTime("2020-08-31");
   $semesterEnd = new DateTime("2020-12-13");
@@ -175,16 +204,44 @@
     </select>
     <span><?php echo $filminput2error; ?></span>
     <label for="filmgenreinput">Filmi zanr:</label>
-    <select name="filmgenreinput" id="filmgenreinput">
       <?php echo $filmgenrehtml; ?>
-    </select>
     <span><?php echo $filmgenreerror; ?></span>
-    <input type="submit" name="relationsubmitgenre" value="Loo seos">
+    <input type="submit" name="filmgenrerelationsubmit" value="Loo seos">
     <p><?php echo $notice2; ?></p>
+    </form>
+    <h4>Filmi stuudio kirje loomine</h4>
+    <form method="POST" id="registerform">
+    <label for="filminput2">Filmi nimi:</label>
+    <select name="filminput2" id="filminput2">
+      <?php echo $filmoptionhtml2; ?>
+    </select>
+    <span><?php echo $filminput2error; ?></span>
+    <label for="filmstudioinput">Stuudio:</label>
+      <?php echo $moviestudioselecthtml; ?>
+    <span><?php echo $moviestudioselecterror; ?></span>
+    <input type="submit" name="filmstudiorelationsubmit" value="Loo seos">
+    </form>
+    <h4>Näitleja tsitaadi kirje loomine</h4>
+    <form method="POST" id="registerform">
+    <label for="filminput2">Filmi nimi:</label>
+    <select name="filminput2" id="filminput2">
+      <?php echo $filmoptionhtml2; ?>
+    </select>
+    <span><?php echo $filminput2error; ?></span>
+    <label for="personinput">Inimene: </label>
+      <select name="personinput" id="personinput">
+        <?php echo $personoptionhtml; ?> 
+      </select>
+      <span><?php echo $personinputerror;?></span>
+    <label for="quoteinput">Tsitaat:</label>
+    <input type="text" name="quoteinput" id="quoteinput" placeholder="Sisesta tsitaat">
+    <span><?php echo $quoteinputerror; ?></span>
+    <input type="submit" name="quoterelationsubmit" value="Loo seos">
     </form>
     </div>
     <footer>
       <h4>See veebileht on tehtud Mait Jurask'i poolt.</h4>
+      <?php echo $notice; ?>
       <h4><?php echo "Parajasti on " .$partofday ."." ?></h4>
     </footer>
  </div>
