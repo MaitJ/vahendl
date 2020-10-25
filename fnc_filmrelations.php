@@ -294,3 +294,140 @@ function storenewgenrerelation($selectedmovie, $selectedgenre){
 	$conn->close();
 	return $notice;
 }
+
+/*function storenewquoterelation($selectedquote, $selectedperson){
+	$notice = "";
+	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+	$stmt = $conn->prepare("SELECT quote_id FROM quote WHERE quote_id = ? AND person_in_movie_id = ?");
+	echo $conn->error;
+	$stmt->bind_param("ii", $selectedquote, $selectedperson);
+	$stmt->bind_result($idfromdb);
+	$stmt->execute();
+	if($stmt->fetch()){
+		$notice = "Selline seos on juba olemas!";
+	} else {
+		$stmt->close();
+		$stmt = $conn->prepare("INSERT INTO quote (quote_id, quote_text, person_in_movie_id) VALUES(?,?,?)");
+		echo $conn->error;
+		$stmt->bind_param("ii", $selectedquote, $quotetext, $selectedperson);
+		if($stmt->execute()){
+			$notice = "Uus seos edukalt salvestatud!";
+		} else {
+			$notice = "Seose salvestamisel tekkis tehniline tõrge: " .$stmt->error;
+		}
+	}
+	
+	$stmt->close();
+	$conn->close();
+	return $notice;
+}*/
+
+function readfilmoptionsfrompersoninmoviehtml($selected) {
+    $result = "<p>Kahjuks ei eksisteeri filme andmebaasis.</p>";
+    $filmoptionhtml = "";
+    $result = "";
+
+    $conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);	
+    $stmt = $conn->prepare("SELECT person_in_movie_id, title, first_name, last_name, role FROM person_in_movie JOIN movie ON movie.movie_id = person_in_movie.movie_id JOIN person ON person.person_id = person_in_movie.person_id");
+    echo $conn->error;
+    $stmt->bind_result($personinmovieidfromdb, $movietitlefromdb, $firstnamefromdb, $lastnamefromdb, $rolefromdb);
+    $stmt->execute();
+
+    while ($stmt->fetch()) {
+        $filmoptionhtml .= '<option value="' .$personinmovieidfromdb.'"';
+        if ($personinmovieidfromdb == $selected) {
+            $filmoptionhtml .= " selected";
+        }
+        $filmoptionhtml .= ">" .$movietitlefromdb. " ". $firstnamefromdb. " ". $lastnamefromdb. " ". $rolefromdb. "</option> \n";
+    }
+    
+    if (!empty($filmoptionhtml)) {
+        $result = '<option value="" disabled selected>Vali andmed</option>' . "\n";
+        $result .= $filmoptionhtml;
+    }
+
+    $stmt->close();
+    $conn->close();
+    return $result;
+}
+
+function storenewquoterelation($selectedandmed, $quotetext){
+	$notice = "";
+	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+	$stmt = $conn->prepare("SELECT quote_id FROM quote WHERE person_in_movie_id = ? AND quote_text = ?");
+	echo $conn->error;
+	$stmt->bind_param("is", $selectedandmed, $quotetext);
+	$stmt->bind_result($idfromdb);
+	$stmt->execute();
+	if($stmt->fetch()){
+		$notice = "Selline seos on juba olemas!";
+	} else {
+		$stmt->close();
+		$stmt = $conn->prepare("INSERT INTO quote (person_in_movie_id, quote_id, quote_text) VALUES(?,?,?)");
+		echo $conn->error;
+		$stmt->bind_param("iis", $selectedandmed, $selectedquote, $quotetext);
+		if($stmt->execute()){
+			$notice = "Uus seos edukalt salvestatud!";
+		} else {
+			$notice = "Seose salvestamisel tekkis tehniline tõrge: " .$stmt->error;
+		}
+	}
+	
+	$stmt->close();
+	$conn->close();
+	return $notice;
+}
+
+function storenewperson($firstname, $lastname, $birthday){
+	$notice = "";
+	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+	$stmt = $conn->prepare("SELECT person_id FROM person WHERE first_name = ? AND last_name = ? AND birth_date = ?");
+	echo $conn->error;
+	$stmt->bind_param("sss", $firstname, $lastname, $birthday);
+	$stmt->bind_result($idfromdb);
+	$stmt->execute();
+	if($stmt->fetch()){
+		$notice = "Selline seos on juba olemas!";
+	} else {
+		$stmt->close();
+		$stmt = $conn->prepare("INSERT INTO person (first_name, last_name, birth_date) VALUES(?,?,?)");
+		echo $conn->error;
+		$stmt->bind_param("sss", $firstname, $lastname, $birthday);
+		if($stmt->execute()){
+			$notice = "Uus seos edukalt salvestatud!";
+		} else {
+			$notice = "Seose salvestamisel tekkis tehniline tõrge: " .$stmt->error;
+		}
+	}
+	
+	$stmt->close();
+	$conn->close();
+	return $notice;
+}
+
+function storenewgenre($genrename, $genredescription){
+	$notice = "";
+	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+	$stmt = $conn->prepare("SELECT genre_id FROM genre WHERE genre_name = ? AND description = ?");
+	echo $conn->error;
+	$stmt->bind_param("ss", $genrename, $genredescription);
+	$stmt->bind_result($idfromdb);
+	$stmt->execute();
+	if($stmt->fetch()){
+		$notice = "Selline seos on juba olemas!";
+	} else {
+		$stmt->close();
+		$stmt = $conn->prepare("INSERT INTO genre (genre_name, description) VALUES(?,?)");
+		echo $conn->error;
+		$stmt->bind_param("ss", $genrename, $genredescription);
+		if($stmt->execute()){
+			$notice = "Uus seos edukalt salvestatud!";
+		} else {
+			$notice = "Seose salvestamisel tekkis tehniline tõrge: " .$stmt->error;
+		}
+	}
+	
+	$stmt->close();
+	$conn->close();
+	return $notice;
+}

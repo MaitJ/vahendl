@@ -10,11 +10,16 @@
 
   $weekdayNamesET = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];
   $monthNamesET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
+  $monthnameset = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
 
   $weekdaynow = date("N");
   $monthnow = date("n");
 
   require("fnc_filmrelations.php");
+
+  $birthyear = 0;
+  $birthmonth = 0;
+  $birthday = 0;
 
   $personinputerror = "";
   $filminputerror = "";
@@ -22,6 +27,12 @@
   $roleinputerror = "";
   $moviestudioselecterror = "";
   $quoteinputerror = "";
+  $andmedinputerror = "";
+  $personinputerror = "";
+  $birthdateerror = "";
+  $birthdayerror = "";
+  $birthmontherror = "";
+  $birthyearerror = "";
 
   $personinputvalue = 0;
   $filminputvalue = 0;
@@ -29,6 +40,9 @@
   $roleinputvalue = "";
   $studionotice = "";
   $genrenotice = "";
+  $quotenotice = "";
+  $personnotice = "";
+  $genreinputnotice = "";
   $filminput2value = "";
 
   $selectedstudio = "";
@@ -81,6 +95,7 @@
   $moviestudioselecthtml = readstudiotoselect($selectedstudio);
   $filmoptionhtml2 = readfilmoptionshtml($filminput2value);
   $moviegenreselecthtml = readgenre($selectedgenre);
+  $filmoptionspersoninmoviehtml = readfilmoptionsfrompersoninmoviehtml($selected);
   $quoteselecthtml = "";
 
   $filminput2value = 0;
@@ -127,8 +142,6 @@
       $genrenotice = storenewgenrerelation($selectedmovie, $selectedgenre);
     }
   }
-  
-  
 
   if(isset($_POST["filmstudiorelationsubmit"])) {
     if(!empty($_POST["filminput"])){
@@ -145,6 +158,76 @@
   
     if (!empty($selectedmovie) and !empty($selectedstudio)) {
       $studionotice = storenewstudiorelation($selectedmovie, $selectedstudio);
+    }
+  }
+
+  if(isset($_POST["quoterelationsubmit"])) {
+    if(!empty($_POST["andmedinput"])){
+      $selectedandmed = intval($_POST["andmedinput"]);
+    } else {
+        $quotenotice = " Vali andmed!";
+    }
+  
+    if(!empty($_POST["quoteinput"])){
+      $quotetext = ($_POST["quoteinput"]);
+    } else {
+      $quotenotice = " Sisesta tsitaat!";
+    }
+  
+    if (!empty($selectedandmed) and !empty($quotetext)) {
+      $quotenotice = storenewquoterelation($selectedandmed, $quotetext);
+    }
+  }
+
+  if(isset($_POST["genresubmit"])) {
+    if(!empty($_POST["genreinput"])){
+      $genrename = ($_POST["genreinput"]);
+    } else {
+        $genreinputnotice = " Sisesta žanr!";
+    }
+
+    if(!empty($_POST["genredescriptioninput"])) {
+      $genredescription = ($_POST["genredescriptioninput"]);
+    } else {
+      $genreinputnotice = " Sisesta žanri kirjeldus!";
+    }
+
+    if (!empty($genrename) and !empty($genredescription)) {
+      $genreinputnotice = storenewgenre($genrename, $genredescription);
+    }
+  }
+
+  if(isset($_POST["personsubmit"])) {
+    if(!empty($_POST["firstnameinput"])){
+      $firstname = ($_POST["firstnameinput"]);
+    } else {
+        $personnotice = " Sisesta eesnimi!";
+    }
+  
+    if(!empty($_POST["lastnameinput"])){
+      $lastname = ($_POST["lastnameinput"]);
+    } else {
+      $personnotice = " Sisesta perekonnanimi!";
+    }
+
+    if(!empty($_POST["birthdayinput"])){
+      $birthday = ($_POST["birthdayinput"]);
+    } else {
+      $personnotice = " Sisesta sünniaeg!";
+    }
+  
+    if (!empty($firstname) and !empty($lastname) and !empty($birthday)) {
+      $personnotice = storenewperson($firstname, $lastname, $birthday);
+    }
+
+    if (empty($birthdayerror) and empty($birthmontherror) and empty($birthyearerror)) {
+      if (checkdate($birthmonth, $birthday, $birthyear)) {
+        $tempdate = new DateTime($birthyear ."-". $birthmonth ."-" .$birthday);
+        $birthdate = $tempdate->format("Y-m-d");
+      }
+      else {
+        $birthdateerror = "Valitud kuup2ev on ebareaalne";
+      }
     }
   }
 
@@ -218,7 +301,61 @@
     </header>
     <?php require('navbar.php'); ?>
     <div id="content">
-    <h4>Inimeste ja filmide kirje loomine</h4>
+    <h4>Filmi žanri lisamine</h4>
+    <form method="POST" id="registerform">
+    <input type="text" name="genreinput" id="genreinput" placeholder="Sisesta žanri liik">
+    <input type="text" name="genredescriptioninput" id="genredescriptioninput" placeholder="Sisesta žanri kirjeldus">
+    <input type="submit" name="genresubmit" value="Loo seos"><span><?php echo $genreinputnotice; ?></span>
+</form>
+    <h4>Inimese info sisestamine</h4>
+    <form method="POST" id="registerform">
+    <label for="firstnameinput">Inimene:</label>
+    <input type="text" name="firstnameinput" id="firstnameinput" placeholder="Sisesta eesnimi">
+    <input type="text" name="lastnameinput" id="lastnameinput" placeholder="Sisesta perekonnanimi">
+    <label for="birthdayinput">Sünnipäev: </label>
+		  <?php
+			echo '<select name="birthdayinput" id="birthdayinput">' ."\n";
+			echo '<option value="" selected disabled>päev</option>' ."\n";
+			for ($i = 1; $i < 32; $i ++){
+				echo '<option value="' .$i .'"';
+				if ($i == $birthday){
+					echo " selected ";
+				}
+				echo ">" .$i ."</option> \n";
+			}
+			echo "</select> \n";
+		  ?>
+	  <label for="birthmonthinput">Sünnikuu: </label>
+	  <?php
+	    echo '<select name="birthmonthinput" id="birthmonthinput">' ."\n";
+		echo '<option value="" selected disabled>kuu</option>' ."\n";
+		for ($i = 1; $i < 13; $i ++){
+			echo '<option value="' .$i .'"';
+			if ($i == $birthmonth){
+				echo " selected ";
+			}
+			echo ">" .$monthnameset[$i - 1] ."</option> \n";
+		}
+		echo "</select> \n";
+	  ?>
+	  <label for="birthyearinput">Sünniaasta: </label>
+	  <?php
+	    echo '<select name="birthyearinput" id="birthyearinput">' ."\n";
+		echo '<option value="" selected disabled>aasta</option>' ."\n";
+		for ($i = date("Y") - 15; $i >= date("Y") - 110; $i --){
+			echo '<option value="' .$i .'"';
+			if ($i == $birthyear){
+				echo " selected ";
+			}
+			echo ">" .$i ."</option> \n";
+		}
+		echo "</select> \n";
+	  ?>
+	  <br>
+	  <span><?php echo $birthdateerror ." " .$birthdayerror ." " .$birthmontherror ." " .$birthyearerror; ?></span>
+    <span><?php echo $personinputerror; ?></span>
+    <input type="submit" name="personsubmit" value="Loo seos"><span><?php echo $personnotice; ?></span>
+  </form>
     <form id="registerform" method="POST">
       <label for="personinput">Inimene: </label>
       <select name="personinput" id="personinput">
@@ -240,7 +377,6 @@
       <span><?php echo $roleinputerror; ?></span>
       <input type="submit" name="relationsubmit" value="Loo seos"><span><?php echo $notice; ?></span>
     </form>
-    <hr>
     <h4>Filmi zanri kirje loomine</h4>
     <form method="POST" id="registerform">
     <label for="filminput">Filmi nimi:</label>
@@ -251,7 +387,6 @@
     <label for="filmgenreinput">Filmi zanr:</label>
       <?php echo $moviegenreselecthtml; ?>
     <span><?php echo $filmgenreerror; ?></span>
-<<<<<<< HEAD
     <input type="submit" name="filmgenrerelationsubmit" value="Loo seos"><span><?php echo $genrenotice; ?></span>
     </form>
     <h4>Filmi stuudio kirje loomine</h4>
@@ -268,25 +403,15 @@
     </form>
     <h4>Näitleja tsitaadi kirje loomine</h4>
     <form method="POST" id="registerform">
-    <label for="filminput2">Filmi nimi:</label>
-    <select name="filminput2" id="filminput2">
-      <?php echo $filmoptionhtml2; ?>
+    <label for="andmedinput">Andmed:</label>
+    <select name="andmedinput" id="andmedinput">
+      <?php echo $filmoptionspersoninmoviehtml; ?>
     </select>
-    <span><?php echo $filminput2error; ?></span>
-    <label for="personinput">Inimene: </label>
-      <select name="personinput" id="personinput">
-        <?php echo $personoptionhtml; ?> 
-      </select>
-      <span><?php echo $personinputerror;?></span>
+    <span><?php echo $andmedinputerror; ?></span>
     <label for="quoteinput">Tsitaat:</label>
     <input type="text" name="quoteinput" id="quoteinput" placeholder="Sisesta tsitaat">
     <span><?php echo $quoteinputerror; ?></span>
-    <input type="submit" name="quoterelationsubmit" value="Loo seos">
-=======
-    <input type="submit" name="relationsubmitgenre" value="Loo seos">
-    <p><?php echo $notice2; ?></p>
-    <br>
->>>>>>> 4e8f09403c2b1b8a21b1ee07e7841554f3040e84
+    <input type="submit" name="quoterelationsubmit" value="Loo seos"><span><?php echo $quotenotice; ?></span>
     </form>
     </div>
     <footer>
