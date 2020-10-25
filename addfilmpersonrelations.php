@@ -218,6 +218,7 @@
     </header>
     <?php require('navbar.php'); ?>
     <div id="content">
+    <h4>Inimeste ja filmide kirje loomine</h4>
     <form id="registerform" method="POST">
       <label for="personinput">Inimene: </label>
       <select name="personinput" id="personinput">
@@ -239,6 +240,7 @@
       <span><?php echo $roleinputerror; ?></span>
       <input type="submit" name="relationsubmit" value="Loo seos"><span><?php echo $notice; ?></span>
     </form>
+    <hr>
     <h4>Filmi zanri kirje loomine</h4>
     <form method="POST" id="registerform">
     <label for="filminput">Filmi nimi:</label>
@@ -249,6 +251,7 @@
     <label for="filmgenreinput">Filmi zanr:</label>
       <?php echo $moviegenreselecthtml; ?>
     <span><?php echo $filmgenreerror; ?></span>
+<<<<<<< HEAD
     <input type="submit" name="filmgenrerelationsubmit" value="Loo seos"><span><?php echo $genrenotice; ?></span>
     </form>
     <h4>Filmi stuudio kirje loomine</h4>
@@ -279,6 +282,11 @@
     <input type="text" name="quoteinput" id="quoteinput" placeholder="Sisesta tsitaat">
     <span><?php echo $quoteinputerror; ?></span>
     <input type="submit" name="quoterelationsubmit" value="Loo seos">
+=======
+    <input type="submit" name="relationsubmitgenre" value="Loo seos">
+    <p><?php echo $notice2; ?></p>
+    <br>
+>>>>>>> 4e8f09403c2b1b8a21b1ee07e7841554f3040e84
     </form>
     </div>
     <footer>
