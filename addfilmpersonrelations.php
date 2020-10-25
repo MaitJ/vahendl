@@ -27,11 +27,16 @@
   $filminputvalue = 0;
   $positioninputvalue = 0;
   $roleinputvalue = "";
+  $studionotice = "";
+  $genrenotice = "";
+  $filminput2value = "";
 
   $selectedstudio = "";
+  $selectedgenre = "";
   $selected = "";
 
   $notice = "";
+  
 
 
 
@@ -74,6 +79,8 @@
   $filmoptionhtml = readfilmoptionshtml($filminputvalue);
   $positionoptionhtml = readpositionoptionshtml($positioninputvalue);
   $moviestudioselecthtml = readstudiotoselect($selectedstudio);
+  $filmoptionhtml2 = readfilmoptionshtml($filminput2value);
+  $moviegenreselecthtml = readgenre($selectedgenre);
   $quoteselecthtml = "";
 
   $filminput2value = 0;
@@ -82,7 +89,7 @@
   $filmgenreerror = "";
   $notice2 = 0;
 
-  if (isset($_POST["filmgenrerelationsubmit"])) /*and !empty($_POST["relationsubmitgenre"]))*/ {
+  /*if (isset($_POST["filmgenrerelationsubmit"])) and !empty($_POST["relationsubmitgenre"])) {
 
     if (!empty($_POST["filminput2"])) {
       $filminput2value = $_POST["filminput2"];
@@ -100,6 +107,44 @@
 
     if (!empty($filminput2value) and !empty($filmgenreinput)) {
       $notice2 = storenewgenrerelation($selectedmovie, $selectedgenre);  //POOLELI
+    }
+  } */
+
+  if(isset($_POST["filmgenrerelationsubmit"])){
+    if(!empty($_POST["filminput"])){
+      $selectedmovie = intval($_POST["filminput"]);
+    } else {
+      $genrenotice = " Vali film!";
+    }
+
+    if(!empty($_POST["filmgenreinput"])){
+      $selectedgenre = intval($_POST["filmgenreinput"]);
+    } else {
+      $genrenotice .= " Vali žanr!";
+    }
+
+    if(!empty($selectedmovie) and !empty($selectedgenre)){
+      $genrenotice = storenewgenrerelation($selectedmovie, $selectedgenre);
+    }
+  }
+  
+  
+
+  if(isset($_POST["filmstudiorelationsubmit"])) {
+    if(!empty($_POST["filminput"])){
+      $selectedmovie = intval($_POST["filminput"]);
+    } else {
+        $studionotice = " Vali film!";
+    }
+  
+    if(!empty($_POST["filmstudioinput"])){
+      $selectedstudio = intval($_POST["filmstudioinput"]);
+    } else {
+      $studionotice = " Vali stuudio!";
+    }
+  
+    if (!empty($selectedmovie) and !empty($selectedstudio)) {
+      $studionotice = storenewstudiorelation($selectedmovie, $selectedstudio);
     }
   }
 
@@ -124,8 +169,7 @@
     }
   } */
 
-  $filmoptionhtml2 = readfilmoptionshtml($filminput2value);
-  $filmgenrehtml = readgenre($selected);
+  
   //vaatame semestri kulgemist
   $semesterStart = new DateTime("2020-08-31");
   $semesterEnd = new DateTime("2020-12-13");
@@ -193,33 +237,31 @@
       <label for="roleinput">Roll: </label>
       <input type="text" name="roleinput" id="roleinput" placeholder="Sisesta roll">
       <span><?php echo $roleinputerror; ?></span>
-      <input type="submit" name="relationsubmit" value="Loo seos">
-      <p><?php echo $notice; ?></p>
+      <input type="submit" name="relationsubmit" value="Loo seos"><span><?php echo $notice; ?></span>
     </form>
     <h4>Filmi zanri kirje loomine</h4>
     <form method="POST" id="registerform">
-    <label for="filminput2">Filmi nimi:</label>
-    <select name="filminput2" id="filminput2">
+    <label for="filminput">Filmi nimi:</label>
+    <select name="filminput" id="filminput">
       <?php echo $filmoptionhtml2; ?>
     </select>
     <span><?php echo $filminput2error; ?></span>
     <label for="filmgenreinput">Filmi zanr:</label>
-      <?php echo $filmgenrehtml; ?>
+      <?php echo $moviegenreselecthtml; ?>
     <span><?php echo $filmgenreerror; ?></span>
-    <input type="submit" name="filmgenrerelationsubmit" value="Loo seos">
-    <p><?php echo $notice2; ?></p>
+    <input type="submit" name="filmgenrerelationsubmit" value="Loo seos"><span><?php echo $genrenotice; ?></span>
     </form>
     <h4>Filmi stuudio kirje loomine</h4>
     <form method="POST" id="registerform">
-    <label for="filminput2">Filmi nimi:</label>
-    <select name="filminput2" id="filminput2">
+    <label for="filminput">Filmi nimi:</label>
+    <select name="filminput" id="filminput">
       <?php echo $filmoptionhtml2; ?>
     </select>
     <span><?php echo $filminput2error; ?></span>
     <label for="filmstudioinput">Stuudio:</label>
       <?php echo $moviestudioselecthtml; ?>
     <span><?php echo $moviestudioselecterror; ?></span>
-    <input type="submit" name="filmstudiorelationsubmit" value="Loo seos">
+    <input type="submit" name="filmstudiorelationsubmit" value="Loo seos"><span><?php echo $studionotice; ?></span>
     </form>
     <h4>Näitleja tsitaadi kirje loomine</h4>
     <form method="POST" id="registerform">

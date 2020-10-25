@@ -135,7 +135,7 @@ function readgenre($selected) {
         $genres .= ">" .$genrenamefromdb ."</option> \n";
     }
     if (!empty($genres)) {
-        $notice = '<select name="moviegenreinput" id="moviegenreinput">' ."\n";
+        $notice = '<select name="filmgenreinput" id="filmgenreinput">' ."\n";
 		$notice .= '<option value="" selected disabled>Vali žanr</option>' ."\n";
 		$notice .= $genres;
 		$notice .= "</select> \n";
@@ -238,6 +238,34 @@ function readstudiotoselect($selectedstudio) {
     $stmt->close();
 	$conn->close();
 	return $notice;
+}
+
+function storenewstudiorelation($selectedmovie, $selectedstudio) {
+    $notice = "";
+	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+	$stmt = $conn->prepare("SELECT movie_by_production_company_id FROM movie_by_production_company WHERE movie_movie_id = ? AND production_company_id = ?");
+	echo $conn->error;
+	$stmt->bind_param("ii", $selectedmovie, $selectedstudio);
+	$stmt->bind_result($idfromdb);
+	$stmt->execute();
+	if($stmt->fetch()){
+		$notice = "Selline seos on juba olemas!";
+	} else {
+		$stmt->close();
+		$stmt = $conn->prepare("INSERT INTO movie_by_production_company (movie_movie_id, production_company_id) VALUES(?,?)");
+		echo $conn->error;
+		$stmt->bind_param("ii", $selectedmovie, $selectedstudio);
+		if($stmt->execute()){
+			$notice = "Uus seos edukalt salvestatud!";
+		} else {
+			$notice = "Seose salvestamisel tekkis tehniline tõrge: " .$stmt->error;
+		}
+	}
+	
+	$stmt->close();
+	$conn->close();
+	return $notice;
+
 }
 
 function storenewgenrerelation($selectedmovie, $selectedgenre){
