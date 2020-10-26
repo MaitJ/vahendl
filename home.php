@@ -121,7 +121,7 @@
     </div>
     <?php echo $imghtml;?>
     <footer>
-      <h4>See veebileht on tehtud Mait Jurask'i poolt.</h4>
+      <h4>See veebileht on tehtud Mait Juraski ja Martin Kilgi poolt.</h4>
       <h4><?php echo "Parajasti on " .$partofday ."." ?></h4>
     </footer>
  </div>
