@@ -46,6 +46,8 @@
   $quotenotice = "";
   $personnotice = "";
   $genreinputnotice = "";
+  $positioninputnotice = "";
+  $genredescription = "";
   $filminput2value = "";
   $moviestudionotice = "";
   $studioaddressinput = "";
@@ -56,8 +58,6 @@
 
   $notice = "";
   
-
-
 
   if (isset($_POST["relationsubmit"])) {
     if (empty($_POST["personinput"])) {
@@ -193,12 +193,26 @@
 
     if(!empty($_POST["genredescriptioninput"])) {
       $genredescription = ($_POST["genredescriptioninput"]);
+    } 
+
+    if (!empty($genrename)) {
+      $genreinputnotice = storenewgenre($genrename, $genredescription);
+    }
+  }
+
+  if(isset($_POST["positionsubmit"])) {
+    if(!empty($_POST["positioninput"])){
+      $positionname = ($_POST["positioninput"]);
     } else {
-      $genreinputnotice = " Sisesta žanri kirjeldus!";
+        $positioninputnotice = " Sisesta positsioon!";
     }
 
-    if (!empty($genrename) and !empty($genredescription)) {
-      $genreinputnotice = storenewgenre($genrename, $genredescription);
+    if(!empty($_POST["positiondescriptioninput"])){
+      $positiondescription = ($_POST["positiondescriptioninput"]);
+    } 
+
+    if (!empty($positionname)) {
+      $positioninputnotice = storenewposition($positionname, $positiondescription);
     }
   }
 
@@ -215,14 +229,25 @@
       $personnotice = " Sisesta perekonnanimi!";
     }
 
-    if(!empty($_POST["birthdayinput"])){
-      $birthday = ($_POST["birthdayinput"]);
-    } else {
-      $personnotice = " Sisesta sünniaeg!";
+    if (isset($_POST["birthdayinput"])) {
+      $birthday = intval($_POST["birthdayinput"]);
     }
-  
-    if (!empty($firstname) and !empty($lastname) and !empty($birthday)) {
-      $personnotice = storenewperson($firstname, $lastname, $birthday);
+    else {
+      $birthdayerror = "Palun vali synnikuup2ev";
+    }
+
+    if (isset($_POST["birthmonthinput"])) {
+      $birthmonth = intval($_POST["birthmonthinput"]);
+    }
+    else {
+      $birthmontherror = "Palun vali synnikuu";
+    }
+
+    if (isset($_POST["birthyearinput"])) {
+      $birthyear = intval($_POST["birthyearinput"]);
+    }
+    else {
+      $birthyearerror = "Palun vali synniaasta";
     }
 
     if (empty($birthdayerror) and empty($birthmontherror) and empty($birthyearerror)) {
@@ -233,6 +258,10 @@
       else {
         $birthdateerror = "Valitud kuup2ev on ebareaalne";
       }
+    }
+
+    if (!empty($firstname) and !empty($lastname) and !empty($birthdate)) {
+      $personnotice = storenewperson($firstname, $lastname, $birthdate);
     }
   }
 
@@ -323,6 +352,27 @@
     </header>
     <?php require('navbar.php'); ?>
     <div id="content">
+    <form id="registerform" method="POST">
+      <label for="personinput">Inimene: </label>
+      <select name="personinput" id="personinput">
+        <?php echo $personoptionhtml; ?> 
+      </select>
+      <span><?php echo $personinputerror;?></span>
+      <label for="filminput">Film: </label>
+      <select name="filminput" id="filminput">
+        <?php echo $filmoptionhtml; ?>
+      </select>
+      <span><?php echo $filminputerror; ?></span>
+      <label for="positioninput">Positsioon: </label>
+      <select name="positioninput" id="positioninput">
+        <?php echo $positionoptionhtml; ?>
+      </select>
+      <span><?php echo $positioninputerror; ?></span>
+      <label for="roleinput">Roll: </label>
+      <input type="text" name="roleinput" id="roleinput" placeholder="Sisesta roll">
+      <span><?php echo $roleinputerror; ?></span>
+      <input type="submit" name="relationsubmit" value="Loo seos"><span><?php echo $notice; ?></span>
+      </form>
     <h4>Filmi žanri lisamine</h4>
     <form method="POST" id="registerform">
     <input type="text" name="genreinput" id="genreinput" placeholder="Sisesta žanri liik">
@@ -378,27 +428,12 @@
     <span><?php echo $personinputerror; ?></span>
     <input type="submit" name="personsubmit" value="Loo seos"><span><?php echo $personnotice; ?></span>
   </form>
-    <form id="registerform" method="POST">
-      <label for="personinput">Inimene: </label>
-      <select name="personinput" id="personinput">
-        <?php echo $personoptionhtml; ?> 
-      </select>
-      <span><?php echo $personinputerror;?></span>
-      <label for="filminput">Film: </label>
-      <select name="filminput" id="filminput">
-        <?php echo $filmoptionhtml; ?>
-      </select>
-      <span><?php echo $filminputerror; ?></span>
-      <label for="positioninput">Positsioon: </label>
-      <select name="positioninput" id="positioninput">
-        <?php echo $positionoptionhtml; ?>
-      </select>
-      <span><?php echo $positioninputerror; ?></span>
-      <label for="roleinput">Roll: </label>
-      <input type="text" name="roleinput" id="roleinput" placeholder="Sisesta roll">
-      <span><?php echo $roleinputerror; ?></span>
-      <input type="submit" name="relationsubmit" value="Loo seos"><span><?php echo $notice; ?></span>
-    </form>
+  <h4>Inimese positsiooni lisamine</h4>
+  <form method="POST" id="registerform">
+  <input type="text" name="positioninput" id="positioninput" placeholder="Sisesta positsioon">
+  <input type="text" name="positiondescriptioninput" id="positiondescriptioninput" placeholder="Sisesta positsiooni kirjeldus">
+  <input type="submit" name="positionsubmit" value="Loo seos"><span><?php echo $positioninputnotice; ?></span>
+  </form>
     <h4>Filmi zanri kirje loomine</h4>
     <form method="POST" id="registerform">
     <label for="filminput">Filmi nimi:</label>
