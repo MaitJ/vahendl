@@ -450,6 +450,35 @@ function storenewgenre($genrename, $genredescription){
 	return $notice;
 }
 
+function storenewproductioncompany($companyname, $companyaddress) {
+    $notice = "";
+    $conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+    $stmt = $conn->prepare("SELECT production_company_id FROM production_company WHERE company_name = ? AND company_address = ?");
+    echo $conn->error;
+    $stmt->bind_param("ss", $companyname, $companyaddress);
+    $stmt->bind_result($idfromdb);
+    $stmt->execute();
+    if ($stmt->fetch()) {
+        $notice = "Selline kirje on juba olemas";
+    }
+    else {
+        $stmt->close();
+        $stmt = $conn->prepare("INSERT INTO production_company (company_name, company_address) VALUES (?, ?)");
+        echo $conn->error;
+        $stmt->bind_param("ss", $companyname, $companyaddress);
+        if ($stmt->execute()) {
+            $notice = "Uus seos edukalt salvestatud";
+        }
+        else {
+            $notice = "Seose salvestamisel tekkis error: " . $stmt->error;
+        }
+    }
+
+    $stmt->close();
+    $conn->close();
+    return $notice;
+}
+
 function storenewposition($positionname, $positiondescription){
 	$notice = "";
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
