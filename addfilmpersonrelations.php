@@ -33,6 +33,9 @@
   $birthdayerror = "";
   $birthmontherror = "";
   $birthyearerror = "";
+  $moviestudioinputerror = "";
+
+
 
   $personinputvalue = 0;
   $filminputvalue = 0;
@@ -44,6 +47,8 @@
   $personnotice = "";
   $genreinputnotice = "";
   $filminput2value = "";
+  $moviestudionotice = "";
+  $studioaddressinput = "";
 
   $selectedstudio = "";
   $selectedgenre = "";
@@ -231,6 +236,23 @@
     }
   }
 
+  if (isset($_POST["moviestudiosubmit"]) and !empty($_POST["moviestudiosubmit"])) {
+    if (empty($_POST["moviestudioinput"])) {
+      $moviestudioinputerror = "Filmi stuudio nime ei ole sisestatud!";
+    }
+    else {
+      $moviestudioinput = $_POST["moviestudioinput"];
+    }
+
+    if (!empty($_POST["studioaddressinput"])) {
+      $studioaddressinput = $_POST["studioaddressinput"];
+    }
+
+    if (!empty($moviestudioinput)) {
+      $moviestudionotice = storenewproductioncompany($moviestudioinput, $studioaddressinput);
+    }
+  }
+
   /*if (isset($_POST["relationsubmitgenre"]) and !empty($_POST["relationsubmitgenre"])) {
 
     if (!empty($_POST["filminput2"])) {
@@ -412,6 +434,15 @@
     <input type="text" name="quoteinput" id="quoteinput" placeholder="Sisesta tsitaat">
     <span><?php echo $quoteinputerror; ?></span>
     <input type="submit" name="quoterelationsubmit" value="Loo seos"><span><?php echo $quotenotice; ?></span>
+    </form>
+    <h4>Filmi stuudio lisamine lisamine</h4>
+    <form method="POST" id="registerform">
+      <label for="moviestudioinput">Filmi stuudio nimi:</label>
+      <input type="text" name="moviestudioinput" id="moviestudioinput" placeholder="Sisesta filmi stuudio nimi">
+      <span><?php echo $moviestudioinputerror;?></span>
+      <label for="studioaddressinput">Filmi stuudio aadress:</label>
+      <input type="text" name="studioaddressinput" id="studioaddressinput" placeholder="Sisesta filmi stuudio aadress">
+      <input type="submit" name="moviestudiosubmit" value="Loo seos"><span><?php echo $moviestudionotice; ?></span>
     </form>
     </div>
     <footer>

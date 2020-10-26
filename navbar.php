@@ -8,5 +8,4 @@
 <a href="listdb.php">FilmiAB Kirjed</a>
 <a href="?logout=1">Logi v2lja</a>
 <a href="userprofile.php">Minu kasutajaprofiil</a>
-<a href="listpersoninmovie.php">Filmi tegelaste loend</a>
 </nav>
