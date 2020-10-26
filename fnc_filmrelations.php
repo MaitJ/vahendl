@@ -127,7 +127,7 @@ function readfilmgenrehtml($selected) {
     return $result;
 }
 
-function readpersoninmovie($sortby, $sortorder) {
+function readpersoninmovie($selectorvalue, $sortby, $sortorder) {
     $notice = "<p>Kahjuks ei leidnud filmi tegelasi</p>";
     $conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);	
     $sqlphrase = "SELECT first_name, last_name, role, title FROM person JOIN person_in_movie ON person.person_id = person_in_movie.person_id JOIN movie ON movie.movie_id = person_in_movie.movie_id";
@@ -141,6 +141,22 @@ function readpersoninmovie($sortby, $sortorder) {
         }
         else {
             $stmt = $conn->prepare($sqlphrase . " ORDER BY title");
+        }
+    }
+    else if ($sortby == 3) {
+        if ($sortorder == 2) {
+            $stmt = $conn->prepare($sqlphrase . " ORDER BY role DESC");
+        }
+        else {
+            $stmt = $conn->prepare($sqlphrase . " ORDER BY role");
+        }
+    }
+    else if ($sortby == 2) {
+        if ($sortorder == 2) {
+            $stmt = $conn->prepare($sqlphrase . " ORDER BY first_name DESC");
+        }
+        else {
+            $stmt = $conn->prepare($sqlphrase . " ORDER BY first_name");
         }
     }
     echo $conn->error;
@@ -159,8 +175,10 @@ function readpersoninmovie($sortby, $sortorder) {
 
     if (!empty($rows)) {
         $notice = "<table> \n";
-        $notice .= "\t<tr>\n\t\t<th>Isik</th>\n\t\t<th>Roll</th>\n";
-        $notice .= "\t\t" . '<th>Film <a href="?sortby=4&sortorder=1">&uarr;</a>&nbsp;<a href="?sortby=4&sortorder=2">&darr;</a></th>' . "\n\t</tr>\n";
+        $notice .= "\t<tr>\n";
+        $notice .="\t\t" . '<th>Isik <a href="?selector='.$selectorvalue.'&sortby=2&sortorder=1&selectorsubmit=Lae+kirje">&uarr;</a>&nbsp;<a href="?selector='.$selectorvalue.'&sortby=2&sortorder=2&selectorsubmit=Lae+kirje">&darr;</a></th>' . "\n";
+        $notice .= "\t\t" . '<th>Roll <a href="?selector='.$selectorvalue.'&sortby=3&sortorder=1&selectorsubmit=Lae+kirje">&uarr;</a>&nbsp;<a href="?selector='.$selectorvalue.'&sortby=3&sortorder=2&selectorsubmit=Lae+kirje">&darr;</a></th>' ."\n";
+        $notice .= "\t\t" . '<th>Film <a href="?selector='.$selectorvalue.'&sortby=4&sortorder=1&selectorsubmit=Lae+kirje">&uarr;</a>&nbsp;<a href="?selector='.$selectorvalue .'&sortby=4&sortorder=2&selectorsubmit=Lae+kirje">&darr;</a></th>' . "\n\t</tr>\n";
         
         $notice .= $rows;
         $notice .= "</table> \n";
