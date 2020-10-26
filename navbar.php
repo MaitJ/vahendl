@@ -5,6 +5,7 @@
 <a href="listfilms.php">Filmide nimekiri</a>
 <a href="addfilms.php">Filmide lisamine</a>
 <a href="addfilmpersonrelations.php">Filmi seoste lisamine</a>
+<a href="listdb.php">FilmiAB Kirjed</a>
 <a href="?logout=1">Logi v2lja</a>
 <a href="userprofile.php">Minu kasutajaprofiil</a>
 <a href="listpersoninmovie.php">Filmi tegelaste loend</a>
