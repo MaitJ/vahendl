@@ -352,6 +352,7 @@
     </header>
     <?php require('navbar.php'); ?>
     <div id="content">
+    <h4>Inimene filmis seos</h4>
     <form id="registerform" method="POST">
       <label for="personinput">Inimene: </label>
       <select name="personinput" id="personinput">
